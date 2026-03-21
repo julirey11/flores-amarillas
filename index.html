@@ -2,160 +2,132 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Flores Amarillas 💛</title>
+<title>Flores para ti 💛</title>
 
 <style>
 body {
     margin: 0;
+    background: radial-gradient(circle, #1a0033, #000);
     overflow: hidden;
-    background: linear-gradient(#a8e6ff, #ffffff);
-    font-family: 'Segoe UI', sans-serif;
+    font-family: Arial;
+    color: white;
 }
 
 /* TEXTO */
-#final {
-    position: absolute;
-    top: 5%;
-    width: 100%;
+h1 {
     text-align: center;
-    font-size: 35px;
-    color: #ff9800;
-    opacity: 0;
-    animation: fadeIn 3s forwards;
-    animation-delay: 6s;
+    margin-top: 40px;
+    color: #ffeb3b;
+    text-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffc107;
+    animation: glow 2s infinite alternate;
 }
 
-@keyframes fadeIn {
-    to { opacity: 1; }
+@keyframes glow {
+    from { text-shadow: 0 0 10px #ffeb3b; }
+    to { text-shadow: 0 0 30px #ffc107; }
 }
 
-/* CONTENEDOR */
-#campo {
+/* FLORES */
+#flores {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 100%;
-}
-
-/* TALLO */
-.tallo {
-    position: absolute;
-    bottom: 0;
-    width: 4px;
-    height: 0;
-    background: #2e7d32;
-    animation: crecer 4s ease forwards;
-}
-
-@keyframes crecer {
-    to { height: 180px; }
-}
-
-/* FLOR BASE */
-.flor {
-    position: absolute;
-    transform: scale(0);
-    animation: abrir 2s ease forwards;
-    animation-delay: 4s;
-}
-
-@keyframes abrir {
-    to { transform: scale(1); }
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
 
 /* GIRASOL */
 .girasol {
-    width: 60px;
-    height: 60px;
-    background: radial-gradient(circle, #5d4037 30%, #fdd835 31%);
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, #4e342e 30%, #fdd835 31%);
     border-radius: 50%;
+    position: relative;
+    animation: aparecer 3s ease forwards;
 }
 
-/* pétalos girasol */
+/* pétalos */
 .girasol::before {
     content: "";
     position: absolute;
-    width: 80px;
-    height: 80px;
-    background: repeating-conic-gradient(#fdd835 0deg 20deg, transparent 20deg 40deg);
+    width: 110px;
+    height: 110px;
+    background: repeating-conic-gradient(#fdd835 0deg 15deg, transparent 15deg 30deg);
     border-radius: 50%;
-    top: -10px;
-    left: -10px;
+    top: -15px;
+    left: -15px;
 }
 
-/* ROSA */
-.rosa {
-    width: 50px;
-    height: 50px;
-    background: radial-gradient(circle, #ffeb3b, #fbc02d);
-    border-radius: 50%;
-    box-shadow: inset 0 0 10px #f57f17;
+/* TALLO */
+.tallo {
+    width: 6px;
+    height: 100px;
+    background: green;
+    margin: auto;
 }
 
-/* TULIPÁN */
-.tulipan {
-    width: 30px;
-    height: 50px;
-    background: #fdd835;
-    border-radius: 50% 50% 0 0;
+/* APARECER */
+@keyframes aparecer {
+    from { transform: translateY(200px) scale(0); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
 }
 
-/* ABEJAS */
-.abeja {
+/* BRILLOS */
+.brillo {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    background: black;
+    width: 5px;
+    height: 5px;
+    background: yellow;
     border-radius: 50%;
-    animation: volar 10s linear infinite;
+    animation: flotar 5s linear infinite;
 }
 
-@keyframes volar {
-    0% { left: -50px; top: 50px; }
-    50% { top: 120px; }
-    100% { left: 100%; top: 60px; }
+@keyframes flotar {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-200px); opacity: 0; }
 }
 </style>
 </head>
 
 <body>
 
-<div id="final">🌼 Feliz día de las flores amarillas 🌼</div>
-<div id="campo"></div>
+<h1>🌻 Flores para ti 💛</h1>
+
+<div id="flores"></div>
 
 <script>
-function crearFlor(tipo, x) {
-    let campo = document.getElementById("campo");
+// crear flores
+let cont = document.getElementById("flores");
+
+for (let i = 0; i < 7; i++) {
+    let contenedor = document.createElement("div");
+
+    let flor = document.createElement("div");
+    flor.className = "girasol";
 
     let tallo = document.createElement("div");
     tallo.className = "tallo";
-    tallo.style.left = x + "%";
 
-    let flor = document.createElement("div");
-    flor.className = "flor " + tipo;
-    flor.style.left = (x - 2) + "%";
-    flor.style.bottom = "180px";
+    contenedor.appendChild(flor);
+    contenedor.appendChild(tallo);
 
-    campo.appendChild(tallo);
-    campo.appendChild(flor);
+    cont.appendChild(contenedor);
 }
 
-// Crear flores distribuidas
-let tipos = ["girasol", "rosa", "tulipan"];
+// crear brillos
+function crearBrillo() {
+    let b = document.createElement("div");
+    b.className = "brillo";
+    b.style.left = Math.random() * 100 + "%";
+    b.style.top = "100%";
 
-for (let i = 0; i < 10; i++) {
-    let tipo = tipos[Math.floor(Math.random() * tipos.length)];
-    let x = Math.random() * 90;
-    crearFlor(tipo, x);
+    document.body.appendChild(b);
+
+    setTimeout(() => b.remove(), 5000);
 }
 
-// Abejas
-for (let i = 0; i < 3; i++) {
-    let abeja = document.createElement("div");
-    abeja.className = "abeja";
-    abeja.style.top = (50 + i * 40) + "px";
-    document.body.appendChild(abeja);
-}
+setInterval(crearBrillo, 200);
 </script>
 
 </body>
