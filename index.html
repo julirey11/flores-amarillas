@@ -8,117 +8,106 @@
 body {
     margin: 0;
     overflow: hidden;
-    font-family: Arial;
-    background: linear-gradient(#87CEEB, #ffffff);
-    text-align: center;
+    background: linear-gradient(#a8e6ff, #ffffff);
+    font-family: 'Segoe UI', sans-serif;
 }
 
-/* BOTÓN */
-#inicio {
-    position: absolute;
-    top: 40%;
-    width: 100%;
-}
-
-button {
-    padding: 15px 30px;
-    font-size: 22px;
-    background: gold;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-/* MENSAJE */
-#mensaje {
-    display: none;
-    position: absolute;
-    top: 20%;
-    width: 80%;
-    left: 10%;
-    font-size: 20px;
-}
-
-/* TEXTO FINAL */
+/* TEXTO */
 #final {
-    display: none;
     position: absolute;
     top: 5%;
     width: 100%;
+    text-align: center;
     font-size: 35px;
-    color: orange;
-    font-weight: bold;
-    animation: aparecer 3s ease;
+    color: #ff9800;
+    opacity: 0;
+    animation: fadeIn 3s forwards;
+    animation-delay: 6s;
 }
 
-@keyframes aparecer {
-    from {opacity: 0;}
-    to {opacity: 1;}
+@keyframes fadeIn {
+    to { opacity: 1; }
 }
 
-/* CONTENEDOR FLORES */
-#flores {
+/* CONTENEDOR */
+#campo {
     position: absolute;
     bottom: 0;
     width: 100%;
+    height: 100%;
 }
 
 /* TALLO */
 .tallo {
     position: absolute;
     bottom: 0;
-    width: 6px;
+    width: 4px;
     height: 0;
-    background: green;
-    animation: crecer 3s forwards;
+    background: #2e7d32;
+    animation: crecer 4s ease forwards;
 }
 
 @keyframes crecer {
-    to { height: 150px; }
+    to { height: 180px; }
 }
 
-/* FLOR */
+/* FLOR BASE */
 .flor {
     position: absolute;
-    bottom: 150px;
-    width: 40px;
-    height: 40px;
-    background: yellow;
-    border-radius: 50%;
     transform: scale(0);
-    animation: abrir 2s forwards;
-    animation-delay: 3s;
-}
-
-/* pétalos */
-.flor::before, .flor::after {
-    content: "";
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    background: yellow;
-    border-radius: 50%;
-}
-
-.flor::before {
-    top: -20px;
-    left: 0;
-}
-
-.flor::after {
-    top: 0;
-    left: -20px;
+    animation: abrir 2s ease forwards;
+    animation-delay: 4s;
 }
 
 @keyframes abrir {
     to { transform: scale(1); }
 }
 
+/* GIRASOL */
+.girasol {
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, #5d4037 30%, #fdd835 31%);
+    border-radius: 50%;
+}
+
+/* pétalos girasol */
+.girasol::before {
+    content: "";
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background: repeating-conic-gradient(#fdd835 0deg 20deg, transparent 20deg 40deg);
+    border-radius: 50%;
+    top: -10px;
+    left: -10px;
+}
+
+/* ROSA */
+.rosa {
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle, #ffeb3b, #fbc02d);
+    border-radius: 50%;
+    box-shadow: inset 0 0 10px #f57f17;
+}
+
+/* TULIPÁN */
+.tulipan {
+    width: 30px;
+    height: 50px;
+    background: #fdd835;
+    border-radius: 50% 50% 0 0;
+}
+
 /* ABEJAS */
 .abeja {
     position: absolute;
-    font-size: 25px;
-    animation: volar 8s linear infinite;
+    width: 20px;
+    height: 20px;
+    background: black;
+    border-radius: 50%;
+    animation: volar 10s linear infinite;
 }
 
 @keyframes volar {
@@ -131,63 +120,41 @@ button {
 
 <body>
 
-<div id="inicio">
-    <button onclick="iniciar()">Dale click 💛</button>
-</div>
-
-<div id="mensaje"></div>
 <div id="final">🌼 Feliz día de las flores amarillas 🌼</div>
-<div id="flores"></div>
+<div id="campo"></div>
 
 <script>
-function iniciar() {
-    document.getElementById("inicio").style.display = "none";
+function crearFlor(tipo, x) {
+    let campo = document.getElementById("campo");
 
-    const texto = `Sé que tal vez no es lo mismo, pero está hecho con mucho amor.
-He llegado a decepcionarte y no es mi intención.
-Quiero darte lo mejor de mí, que cada día sea especial.
-Sé que unas flores virtuales no son lo mismo que unas reales,
-pero esta animación está hecha con amor sincero.
-Te amo mucho 💛`;
+    let tallo = document.createElement("div");
+    tallo.className = "tallo";
+    tallo.style.left = x + "%";
 
-    let mensaje = document.getElementById("mensaje");
-    mensaje.style.display = "block";
-    mensaje.innerText = texto;
+    let flor = document.createElement("div");
+    flor.className = "flor " + tipo;
+    flor.style.left = (x - 2) + "%";
+    flor.style.bottom = "180px";
 
-    setTimeout(() => {
-        mensaje.style.display = "none";
-        mostrarFlores();
-    }, 10000);
+    campo.appendChild(tallo);
+    campo.appendChild(flor);
 }
 
-function mostrarFlores() {
-    document.getElementById("final").style.display = "block";
+// Crear flores distribuidas
+let tipos = ["girasol", "rosa", "tulipan"];
 
-    let contenedor = document.getElementById("flores");
+for (let i = 0; i < 10; i++) {
+    let tipo = tipos[Math.floor(Math.random() * tipos.length)];
+    let x = Math.random() * 90;
+    crearFlor(tipo, x);
+}
 
-    for (let i = 0; i < 8; i++) {
-        let x = Math.random() * 90;
-
-        let tallo = document.createElement("div");
-        tallo.className = "tallo";
-        tallo.style.left = x + "%";
-
-        let flor = document.createElement("div");
-        flor.className = "flor";
-        flor.style.left = x + "%";
-
-        contenedor.appendChild(tallo);
-        contenedor.appendChild(flor);
-    }
-
-    // abejas
-    for (let i = 0; i < 4; i++) {
-        let abeja = document.createElement("div");
-        abeja.className = "abeja";
-        abeja.innerText = "🐝";
-        abeja.style.top = (50 + i * 40) + "px";
-        document.body.appendChild(abeja);
-    }
+// Abejas
+for (let i = 0; i < 3; i++) {
+    let abeja = document.createElement("div");
+    abeja.className = "abeja";
+    abeja.style.top = (50 + i * 40) + "px";
+    document.body.appendChild(abeja);
 }
 </script>
 
