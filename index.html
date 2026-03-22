@@ -27,45 +27,7 @@ h1 {
     width: 100%;
     display: flex;
     justify-content: center;
-    gap: 50px;
-}
-
-/* TALLO */
-.tallo {
-    width: 5px;
-    height: 0;
-    background: linear-gradient(#1b5e20, #66bb6a);
-    animation: crecer 3s ease forwards;
-}
-
-@keyframes crecer {
-    to { height: 180px; }
-}
-
-/* FLOR */
-.flor {
-    transform: scale(0);
-    animation: abrir 2s ease forwards;
-    animation-delay: 3s;
-}
-
-@keyframes abrir {
-    to { transform: scale(1); }
-}
-
-/* PARTÍCULAS */
-.particula {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: #ffeb3b;
-    border-radius: 50%;
-    animation: flotar 6s linear infinite;
-}
-
-@keyframes flotar {
-    from { transform: translateY(0); opacity: 1; }
-    to { transform: translateY(-300px); opacity: 0; }
+    gap: 40px;
 }
 </style>
 </head>
@@ -80,78 +42,89 @@ const campo = document.getElementById("campo");
 
 function crearFlor() {
     let cont = document.createElement("div");
-    cont.style.display = "flex";
-    cont.style.flexDirection = "column";
-    cont.style.alignItems = "center";
 
-    // SVG REALISTA
+    // SVG completo
     let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "100");
-    svg.setAttribute("height", "100");
-    svg.classList.add("flor");
+    svg.setAttribute("width", "120");
+    svg.setAttribute("height", "220");
 
-    // pétalos suaves tipo girasol real
-    for (let i = 0; i < 20; i++) {
+    // DEFINIR DEGRADADO
+    let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+
+    let grad = document.createElementNS("http://www.w3.org/2000/svg", "radialGradient");
+    grad.setAttribute("id", "gradPetalo");
+
+    let stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+    stop1.setAttribute("offset", "0%");
+    stop1.setAttribute("stop-color", "#fff176");
+
+    let stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+    stop2.setAttribute("offset", "100%");
+    stop2.setAttribute("stop-color", "#fbc02d");
+
+    grad.appendChild(stop1);
+    grad.appendChild(stop2);
+    defs.appendChild(grad);
+    svg.appendChild(defs);
+
+    // TALLO CURVO
+    let tallo = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    tallo.setAttribute("d", "M60 220 Q50 150 60 120");
+    tallo.setAttribute("stroke", "#2e7d32");
+    tallo.setAttribute("stroke-width", "5");
+    tallo.setAttribute("fill", "none");
+
+    svg.appendChild(tallo);
+
+    // HOJAS
+    function crearHoja(x, y, rot) {
+        let hoja = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+        hoja.setAttribute("cx", x);
+        hoja.setAttribute("cy", y);
+        hoja.setAttribute("rx", "12");
+        hoja.setAttribute("ry", "6");
+        hoja.setAttribute("fill", "#388e3c");
+        hoja.setAttribute("transform", `rotate(${rot} ${x} ${y})`);
+        return hoja;
+    }
+
+    svg.appendChild(crearHoja(50, 170, -30));
+    svg.appendChild(crearHoja(70, 150, 30));
+
+    // PÉTALOS CON DEGRADADO
+    for (let i = 0; i < 18; i++) {
         let petalo = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
 
-        petalo.setAttribute("cx", "50");
-        petalo.setAttribute("cy", "25");
+        petalo.setAttribute("cx", "60");
+        petalo.setAttribute("cy", "90");
         petalo.setAttribute("rx", "10");
-        petalo.setAttribute("ry", "28");
-        petalo.setAttribute("fill", "#fdd835");
+        petalo.setAttribute("ry", "30");
+        petalo.setAttribute("fill", "url(#gradPetalo)");
 
         petalo.setAttribute(
             "transform",
-            `rotate(${i * 18} 50 50)`
+            `rotate(${i * 20} 60 120)`
         );
-
-        petalo.style.opacity = "0";
-
-        // animación de apertura uno por uno
-        setTimeout(() => {
-            petalo.style.transition = "0.5s";
-            petalo.style.opacity = "1";
-        }, i * 80);
 
         svg.appendChild(petalo);
     }
 
-    // centro realista
+    // CENTRO
     let centro = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    centro.setAttribute("cx", "50");
-    centro.setAttribute("cy", "50");
+    centro.setAttribute("cx", "60");
+    centro.setAttribute("cy", "120");
     centro.setAttribute("r", "18");
     centro.setAttribute("fill", "#5d4037");
 
     svg.appendChild(centro);
 
-    // tallo
-    let tallo = document.createElement("div");
-    tallo.className = "tallo";
-
-    cont.appendChild(svg);
-    cont.appendChild(tallo);
-
-    campo.appendChild(cont);
+    campo.appendChild(svg);
 }
 
-// crear flores
-for (let i = 0; i < 5; i++) {
+// crear varias flores
+for (let i = 0; i < 6; i++) {
     crearFlor();
 }
-
-// partículas bonitas
-function crearParticula() {
-    let p = document.createElement("div");
-    p.className = "particula";
-    p.style.left = Math.random() * 100 + "%";
-    p.style.top = "100%";
-
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 6000);
-}
-
-setInterval(crearParticula, 150);
 </script>
 
 </body>
