@@ -14,63 +14,64 @@ body {
 }
 
 /* TEXTO */
-h1 {
+.titulo {
     text-align: center;
     margin-top: 40px;
+    font-size: 40px;
     color: #ffeb3b;
     text-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffc107;
-    animation: glow 2s infinite alternate;
 }
 
-@keyframes glow {
-    from { text-shadow: 0 0 10px #ffeb3b; }
-    to { text-shadow: 0 0 30px #ffc107; }
-}
-
-/* FLORES */
-#flores {
+/* RAMO */
+#ramo {
     position: absolute;
     bottom: 0;
     width: 100%;
     display: flex;
     justify-content: center;
-    gap: 20px;
 }
 
-/* GIRASOL */
-.girasol {
-    width: 80px;
-    height: 80px;
-    background: radial-gradient(circle, #4e342e 30%, #fdd835 31%);
+/* TALLOS */
+.tallo {
+    width: 6px;
+    height: 0;
+    background: #2e7d32;
+    margin: 0 10px;
+    animation: crecer 3s forwards;
+}
+
+/* CRECIMIENTO */
+@keyframes crecer {
+    to { height: 200px; }
+}
+
+/* FLOR */
+.flor {
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
+    background: radial-gradient(circle, #5d4037 30%, #fdd835 31%);
     position: relative;
-    animation: aparecer 3s ease forwards;
+    transform: scale(0);
+    animation: aparecer 2s forwards;
+    animation-delay: 3s;
 }
 
-/* pétalos */
-.girasol::before {
+/* PÉTALOS */
+.flor::before {
     content: "";
     position: absolute;
-    width: 110px;
-    height: 110px;
+    width: 100px;
+    height: 100px;
     background: repeating-conic-gradient(#fdd835 0deg 15deg, transparent 15deg 30deg);
     border-radius: 50%;
     top: -15px;
     left: -15px;
 }
 
-/* TALLO */
-.tallo {
-    width: 6px;
-    height: 100px;
-    background: green;
-    margin: auto;
-}
-
 /* APARECER */
 @keyframes aparecer {
-    from { transform: translateY(200px) scale(0); opacity: 0; }
-    to { transform: translateY(0) scale(1); opacity: 1; }
+    to { transform: scale(1); }
 }
 
 /* BRILLOS */
@@ -80,42 +81,45 @@ h1 {
     height: 5px;
     background: yellow;
     border-radius: 50%;
-    animation: flotar 5s linear infinite;
+    animation: flotar 6s linear infinite;
 }
 
 @keyframes flotar {
     from { transform: translateY(0); opacity: 1; }
-    to { transform: translateY(-200px); opacity: 0; }
+    to { transform: translateY(-300px); opacity: 0; }
 }
 </style>
 </head>
 
 <body>
 
-<h1>🌻 Flores para ti 💛</h1>
+<div class="titulo">🌻 Flores para ti 💛</div>
 
-<div id="flores"></div>
+<div id="ramo"></div>
 
 <script>
-// crear flores
-let cont = document.getElementById("flores");
+let ramo = document.getElementById("ramo");
 
+// crear ramo centrado
 for (let i = 0; i < 7; i++) {
-    let contenedor = document.createElement("div");
+    let cont = document.createElement("div");
+    cont.style.display = "flex";
+    cont.style.flexDirection = "column";
+    cont.style.alignItems = "center";
 
     let flor = document.createElement("div");
-    flor.className = "girasol";
+    flor.className = "flor";
 
     let tallo = document.createElement("div");
     tallo.className = "tallo";
 
-    contenedor.appendChild(flor);
-    contenedor.appendChild(tallo);
+    cont.appendChild(flor);
+    cont.appendChild(tallo);
 
-    cont.appendChild(contenedor);
+    ramo.appendChild(cont);
 }
 
-// crear brillos
+// brillos
 function crearBrillo() {
     let b = document.createElement("div");
     b.className = "brillo";
@@ -123,11 +127,10 @@ function crearBrillo() {
     b.style.top = "100%";
 
     document.body.appendChild(b);
-
-    setTimeout(() => b.remove(), 5000);
+    setTimeout(() => b.remove(), 6000);
 }
 
-setInterval(crearBrillo, 200);
+setInterval(crearBrillo, 150);
 </script>
 
 </body>
