@@ -12,7 +12,6 @@ body {
     font-family: Arial;
 }
 
-/* TEXTO */
 h1 {
     text-align: center;
     color: #ffeb3b;
@@ -20,14 +19,14 @@ h1 {
     text-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffc107;
 }
 
-/* CAMPO */
 #campo {
     position: absolute;
     bottom: 0;
     width: 100%;
     display: flex;
     justify-content: center;
-    gap: 40px;
+    align-items: flex-end;
+    gap: 20px;
 }
 </style>
 </head>
@@ -40,23 +39,22 @@ h1 {
 <script>
 const campo = document.getElementById("campo");
 
-function crearFlor() {
-    let cont = document.createElement("div");
+function crearFlor(escala, curva) {
 
-    // SVG completo
     let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "120");
-    svg.setAttribute("height", "220");
+    svg.setAttribute("width", 120 * escala);
+    svg.setAttribute("height", 220 * escala);
 
-    // DEFINIR DEGRADADO
+    // 🔥 DEGRADADO (ÚNICO POR FLOR)
     let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
 
     let grad = document.createElementNS("http://www.w3.org/2000/svg", "radialGradient");
-    grad.setAttribute("id", "gradPetalo");
+    let gradId = "grad" + Math.random();
+    grad.setAttribute("id", gradId);
 
     let stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
     stop1.setAttribute("offset", "0%");
-    stop1.setAttribute("stop-color", "#fff176");
+    stop1.setAttribute("stop-color", "#fff9c4");
 
     let stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
     stop2.setAttribute("offset", "100%");
@@ -67,53 +65,50 @@ function crearFlor() {
     defs.appendChild(grad);
     svg.appendChild(defs);
 
-    // TALLO CURVO
+    // 🌱 TALLO CURVO
     let tallo = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    tallo.setAttribute("d", "M60 220 Q50 150 60 120");
+    tallo.setAttribute("d", `M60 220 Q${60 + curva} 140 60 110`);
     tallo.setAttribute("stroke", "#2e7d32");
-    tallo.setAttribute("stroke-width", "5");
+    tallo.setAttribute("stroke-width", 5 * escala);
     tallo.setAttribute("fill", "none");
 
     svg.appendChild(tallo);
 
-    // HOJAS
-    function crearHoja(x, y, rot) {
-        let hoja = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
-        hoja.setAttribute("cx", x);
-        hoja.setAttribute("cy", y);
-        hoja.setAttribute("rx", "12");
-        hoja.setAttribute("ry", "6");
-        hoja.setAttribute("fill", "#388e3c");
-        hoja.setAttribute("transform", `rotate(${rot} ${x} ${y})`);
-        return hoja;
+    // 🍃 HOJAS
+    function hoja(x, y, rot) {
+        let h = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+        h.setAttribute("cx", x);
+        h.setAttribute("cy", y);
+        h.setAttribute("rx", 12 * escala);
+        h.setAttribute("ry", 6 * escala);
+        h.setAttribute("fill", "#388e3c");
+        h.setAttribute("transform", `rotate(${rot} ${x} ${y})`);
+        return h;
     }
 
-    svg.appendChild(crearHoja(50, 170, -30));
-    svg.appendChild(crearHoja(70, 150, 30));
+    svg.appendChild(hoja(45, 170, -30));
+    svg.appendChild(hoja(75, 150, 30));
 
-    // PÉTALOS CON DEGRADADO
+    // 🌻 PÉTALOS CON DEGRADADO REAL
     for (let i = 0; i < 18; i++) {
         let petalo = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
 
         petalo.setAttribute("cx", "60");
         petalo.setAttribute("cy", "90");
-        petalo.setAttribute("rx", "10");
-        petalo.setAttribute("ry", "30");
-        petalo.setAttribute("fill", "url(#gradPetalo)");
+        petalo.setAttribute("rx", 10 * escala);
+        petalo.setAttribute("ry", 30 * escala);
+        petalo.setAttribute("fill", `url(#${gradId})`);
 
-        petalo.setAttribute(
-            "transform",
-            `rotate(${i * 20} 60 120)`
-        );
+        petalo.setAttribute("transform", `rotate(${i * 20} 60 120)`);
 
         svg.appendChild(petalo);
     }
 
-    // CENTRO
+    // 🌻 CENTRO
     let centro = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     centro.setAttribute("cx", "60");
     centro.setAttribute("cy", "120");
-    centro.setAttribute("r", "18");
+    centro.setAttribute("r", 18 * escala);
     centro.setAttribute("fill", "#5d4037");
 
     svg.appendChild(centro);
@@ -121,10 +116,13 @@ function crearFlor() {
     campo.appendChild(svg);
 }
 
-// crear varias flores
-for (let i = 0; i < 6; i++) {
-    crearFlor();
-}
+// 🌼 RAMO EN PIRÁMIDE (TAMAÑOS DIFERENTES)
+crearFlor(0.8, -20);
+crearFlor(1, -10);
+crearFlor(1.3, 0);   // 🌻 centro grande
+crearFlor(1, 10);
+crearFlor(0.8, 20);
+
 </script>
 
 </body>
