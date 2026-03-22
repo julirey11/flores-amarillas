@@ -10,13 +10,24 @@ body {
     background: radial-gradient(circle, #140028, #000);
     overflow: hidden;
     font-family: Arial;
+    text-align: center;
 }
 
 h1 {
-    text-align: center;
     color: #ffeb3b;
-    margin-top: 30px;
-    text-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffc107;
+    margin-top: 20px;
+    text-shadow: 0 0 20px #ffeb3b;
+}
+
+/* BOTÓN */
+button {
+    margin-top: 20px;
+    padding: 12px 25px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    background: #ffeb3b;
+    cursor: pointer;
 }
 
 /* CAMPO */
@@ -24,13 +35,14 @@ h1 {
     position: absolute;
     bottom: 0;
     width: 100%;
+    height: 70%;
     display: flex;
     justify-content: center;
     align-items: flex-end;
     gap: 20px;
 }
 
-/* TALLO ANIMADO */
+/* TALLO */
 .tallo {
     stroke-dasharray: 300;
     stroke-dashoffset: 300;
@@ -38,9 +50,7 @@ h1 {
 }
 
 @keyframes crecer {
-    to {
-        stroke-dashoffset: 0;
-    }
+    to { stroke-dashoffset: 0; }
 }
 
 /* FLOR */
@@ -61,11 +71,11 @@ h1 {
 /* HOJAS */
 .hoja {
     opacity: 0;
-    animation: aparecerHoja 1s ease forwards;
+    animation: hojas 1s ease forwards;
     animation-delay: 2s;
 }
 
-@keyframes aparecerHoja {
+@keyframes hojas {
     to { opacity: 1; }
 }
 
@@ -89,24 +99,27 @@ h1 {
 <body>
 
 <h1>🌻 Flores para ti 💛</h1>
+<button onclick="crearRamo()">Dale click 💛</button>
+
 <div id="campo"></div>
 
 <script>
 const campo = document.getElementById("campo");
 
-function crearFlor(escala, curva) {
+function crearFlor(escala, curva, offsetX) {
 
     let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", 120 * escala);
-    svg.setAttribute("height", 240 * escala);
+    svg.setAttribute("width", 140);
+    svg.setAttribute("height", 260);
+    svg.style.transform = `translateX(${offsetX}px) scale(${escala})`;
 
     // DEGRADADO
     let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
 
     let grad = document.createElementNS("http://www.w3.org/2000/svg", "radialGradient");
-    let id = "grad" + Math.random();
-    grad.setAttribute("id", id);
+    let id = "g" + Math.random();
 
+    grad.setAttribute("id", id);
     grad.innerHTML = `
         <stop offset="0%" stop-color="#fff9c4"/>
         <stop offset="100%" stop-color="#fbc02d"/>
@@ -115,79 +128,84 @@ function crearFlor(escala, curva) {
     defs.appendChild(grad);
     svg.appendChild(defs);
 
-    // TALLO
+    // TALLO CURVO
     let tallo = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    tallo.setAttribute("d", `M60 240 Q${60 + curva} 150 60 110`);
+    tallo.setAttribute("d", `M70 260 Q${70 + curva} 150 70 120`);
     tallo.setAttribute("stroke", "#2e7d32");
-    tallo.setAttribute("stroke-width", 5 * escala);
+    tallo.setAttribute("stroke-width", 6);
     tallo.setAttribute("fill", "none");
     tallo.classList.add("tallo");
 
     svg.appendChild(tallo);
 
-    // HOJAS
+    // HOJAS GRANDES (visibles)
     function hoja(x, y, rot) {
         let h = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
         h.setAttribute("cx", x);
         h.setAttribute("cy", y);
-        h.setAttribute("rx", 12 * escala);
-        h.setAttribute("ry", 6 * escala);
-        h.setAttribute("fill", "#388e3c");
+        h.setAttribute("rx", 16);
+        h.setAttribute("ry", 8);
+        h.setAttribute("fill", "#43a047");
         h.setAttribute("transform", `rotate(${rot} ${x} ${y})`);
         h.classList.add("hoja");
         return h;
     }
 
-    svg.appendChild(hoja(45, 180, -30));
-    svg.appendChild(hoja(75, 160, 30));
+    svg.appendChild(hoja(55, 200, -40));
+    svg.appendChild(hoja(85, 180, 40));
 
     // FLOR
-    let grupoFlor = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    grupoFlor.classList.add("flor");
+    let grupo = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    grupo.classList.add("flor");
 
-    for (let i = 0; i < 18; i++) {
+    for (let i = 0; i < 20; i++) {
         let petalo = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
-        petalo.setAttribute("cx", "60");
-        petalo.setAttribute("cy", "90");
-        petalo.setAttribute("rx", 10 * escala);
-        petalo.setAttribute("ry", 30 * escala);
+
+        petalo.setAttribute("cx", "70");
+        petalo.setAttribute("cy", "100");
+        petalo.setAttribute("rx", 12);
+        petalo.setAttribute("ry", 32);
         petalo.setAttribute("fill", `url(#${id})`);
-        petalo.setAttribute("transform", `rotate(${i * 20} 60 120)`);
-        grupoFlor.appendChild(petalo);
+
+        petalo.setAttribute("transform", `rotate(${i * 18} 70 120)`);
+        grupo.appendChild(petalo);
     }
 
     let centro = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    centro.setAttribute("cx", "60");
+    centro.setAttribute("cx", "70");
     centro.setAttribute("cy", "120");
-    centro.setAttribute("r", 18 * escala);
+    centro.setAttribute("r", 20);
     centro.setAttribute("fill", "#5d4037");
 
-    grupoFlor.appendChild(centro);
-    svg.appendChild(grupoFlor);
+    grupo.appendChild(centro);
+    svg.appendChild(grupo);
 
     campo.appendChild(svg);
 }
 
-// RAMO
-crearFlor(0.8, -20);
-crearFlor(1, -10);
-crearFlor(1.3, 0);
-crearFlor(1, 10);
-crearFlor(0.8, 20);
+function crearRamo() {
+    campo.innerHTML = "";
 
-// ✨ PARTÍCULAS
-function crearParticula() {
+    crearFlor(0.7, -30, -80);
+    crearFlor(0.9, -15, -40);
+    crearFlor(1.2, 0, 0);      // centro
+    crearFlor(0.9, 15, 40);
+    crearFlor(0.7, 30, 80);
+}
+
+// PARTÍCULAS
+function part() {
     let p = document.createElement("div");
     p.className = "particula";
     p.style.left = Math.random() * 100 + "%";
     p.style.bottom = "0px";
-    p.style.animationDuration = (4 + Math.random() * 4) + "s";
+    p.style.animationDuration = (4 + Math.random() * 3) + "s";
 
     document.body.appendChild(p);
-    setTimeout(() => p.remove(), 8000);
+    setTimeout(() => p.remove(), 7000);
 }
+setInterval(part, 150);
 
-setInterval(crearParticula, 120);
 </script>
 
 </body>
