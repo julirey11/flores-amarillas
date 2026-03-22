@@ -7,79 +7,58 @@
 <style>
 body {
     margin: 0;
-    background: radial-gradient(circle, #1a0033, #000);
+    background: radial-gradient(circle, #140028, #000);
     overflow: hidden;
     font-family: Arial;
-    color: white;
 }
 
 /* TEXTO */
-.titulo {
+h1 {
     text-align: center;
-    margin-top: 40px;
-    font-size: 40px;
     color: #ffeb3b;
+    margin-top: 30px;
     text-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffc107;
 }
 
-/* RAMO */
-#ramo {
+/* CAMPO */
+#campo {
     position: absolute;
     bottom: 0;
     width: 100%;
     display: flex;
     justify-content: center;
+    gap: 40px;
 }
 
-/* TALLOS */
+/* TALLO */
 .tallo {
     width: 6px;
     height: 0;
     background: #2e7d32;
-    margin: 0 10px;
-    animation: crecer 3s forwards;
+    animation: crecer 3s ease forwards;
 }
 
-/* CRECIMIENTO */
 @keyframes crecer {
-    to { height: 200px; }
+    to { height: 160px; }
 }
 
 /* FLOR */
 .flor {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #5d4037 30%, #fdd835 31%);
-    position: relative;
     transform: scale(0);
-    animation: aparecer 2s forwards;
+    animation: abrir 2s ease forwards;
     animation-delay: 3s;
 }
 
-/* PÉTALOS */
-.flor::before {
-    content: "";
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    background: repeating-conic-gradient(#fdd835 0deg 15deg, transparent 15deg 30deg);
-    border-radius: 50%;
-    top: -15px;
-    left: -15px;
-}
-
-/* APARECER */
-@keyframes aparecer {
+@keyframes abrir {
     to { transform: scale(1); }
 }
 
 /* BRILLOS */
 .brillo {
     position: absolute;
-    width: 5px;
-    height: 5px;
-    background: yellow;
+    width: 4px;
+    height: 4px;
+    background: #ffeb3b;
     border-radius: 50%;
     animation: flotar 6s linear infinite;
 }
@@ -93,30 +72,59 @@ body {
 
 <body>
 
-<div class="titulo">🌻 Flores para ti 💛</div>
+<h1>🌻 Flores para ti 💛</h1>
 
-<div id="ramo"></div>
+<div id="campo"></div>
 
 <script>
-let ramo = document.getElementById("ramo");
+const campo = document.getElementById("campo");
 
-// crear ramo centrado
-for (let i = 0; i < 7; i++) {
+function crearGirasol() {
     let cont = document.createElement("div");
     cont.style.display = "flex";
     cont.style.flexDirection = "column";
     cont.style.alignItems = "center";
 
-    let flor = document.createElement("div");
-    flor.className = "flor";
+    // SVG
+    let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "90");
+    svg.setAttribute("height", "90");
+    svg.classList.add("flor");
 
+    // pétalos (suaves y redondos)
+    for (let i = 0; i < 16; i++) {
+        let petalo = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+        petalo.setAttribute("cx", "45");
+        petalo.setAttribute("cy", "20");
+        petalo.setAttribute("rx", "10");
+        petalo.setAttribute("ry", "25");
+        petalo.setAttribute("fill", "#fdd835");
+        petalo.setAttribute("transform", `rotate(${i * 22.5} 45 45)`);
+        svg.appendChild(petalo);
+    }
+
+    // centro
+    let centro = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    centro.setAttribute("cx", "45");
+    centro.setAttribute("cy", "45");
+    centro.setAttribute("r", "15");
+    centro.setAttribute("fill", "#5d4037");
+
+    svg.appendChild(centro);
+
+    // tallo
     let tallo = document.createElement("div");
     tallo.className = "tallo";
 
-    cont.appendChild(flor);
+    cont.appendChild(svg);
     cont.appendChild(tallo);
 
-    ramo.appendChild(cont);
+    campo.appendChild(cont);
+}
+
+// crear varias flores
+for (let i = 0; i < 6; i++) {
+    crearGirasol();
 }
 
 // brillos
