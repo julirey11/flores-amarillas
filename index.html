@@ -19,6 +19,7 @@ h1 {
     text-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffc107;
 }
 
+/* CAMPO */
 #campo {
     position: absolute;
     bottom: 0;
@@ -27,6 +28,60 @@ h1 {
     justify-content: center;
     align-items: flex-end;
     gap: 20px;
+}
+
+/* TALLO ANIMADO */
+.tallo {
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    animation: crecer 3s ease forwards;
+}
+
+@keyframes crecer {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* FLOR */
+.flor {
+    opacity: 0;
+    transform: scale(0.5);
+    animation: florecer 2s ease forwards;
+    animation-delay: 2.5s;
+}
+
+@keyframes florecer {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* HOJAS */
+.hoja {
+    opacity: 0;
+    animation: aparecerHoja 1s ease forwards;
+    animation-delay: 2s;
+}
+
+@keyframes aparecerHoja {
+    to { opacity: 1; }
+}
+
+/* PARTÍCULAS */
+.particula {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #ffeb3b;
+    border-radius: 50%;
+    animation: flotar linear infinite;
+}
+
+@keyframes flotar {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-400px); opacity: 0; }
 }
 </style>
 </head>
@@ -43,38 +98,34 @@ function crearFlor(escala, curva) {
 
     let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", 120 * escala);
-    svg.setAttribute("height", 220 * escala);
+    svg.setAttribute("height", 240 * escala);
 
-    // 🔥 DEGRADADO (ÚNICO POR FLOR)
+    // DEGRADADO
     let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
 
     let grad = document.createElementNS("http://www.w3.org/2000/svg", "radialGradient");
-    let gradId = "grad" + Math.random();
-    grad.setAttribute("id", gradId);
+    let id = "grad" + Math.random();
+    grad.setAttribute("id", id);
 
-    let stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-    stop1.setAttribute("offset", "0%");
-    stop1.setAttribute("stop-color", "#fff9c4");
+    grad.innerHTML = `
+        <stop offset="0%" stop-color="#fff9c4"/>
+        <stop offset="100%" stop-color="#fbc02d"/>
+    `;
 
-    let stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-    stop2.setAttribute("offset", "100%");
-    stop2.setAttribute("stop-color", "#fbc02d");
-
-    grad.appendChild(stop1);
-    grad.appendChild(stop2);
     defs.appendChild(grad);
     svg.appendChild(defs);
 
-    // 🌱 TALLO CURVO
+    // TALLO
     let tallo = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    tallo.setAttribute("d", `M60 220 Q${60 + curva} 140 60 110`);
+    tallo.setAttribute("d", `M60 240 Q${60 + curva} 150 60 110`);
     tallo.setAttribute("stroke", "#2e7d32");
     tallo.setAttribute("stroke-width", 5 * escala);
     tallo.setAttribute("fill", "none");
+    tallo.classList.add("tallo");
 
     svg.appendChild(tallo);
 
-    // 🍃 HOJAS
+    // HOJAS
     function hoja(x, y, rot) {
         let h = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
         h.setAttribute("cx", x);
@@ -83,46 +134,60 @@ function crearFlor(escala, curva) {
         h.setAttribute("ry", 6 * escala);
         h.setAttribute("fill", "#388e3c");
         h.setAttribute("transform", `rotate(${rot} ${x} ${y})`);
+        h.classList.add("hoja");
         return h;
     }
 
-    svg.appendChild(hoja(45, 170, -30));
-    svg.appendChild(hoja(75, 150, 30));
+    svg.appendChild(hoja(45, 180, -30));
+    svg.appendChild(hoja(75, 160, 30));
 
-    // 🌻 PÉTALOS CON DEGRADADO REAL
+    // FLOR
+    let grupoFlor = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    grupoFlor.classList.add("flor");
+
     for (let i = 0; i < 18; i++) {
         let petalo = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
-
         petalo.setAttribute("cx", "60");
         petalo.setAttribute("cy", "90");
         petalo.setAttribute("rx", 10 * escala);
         petalo.setAttribute("ry", 30 * escala);
-        petalo.setAttribute("fill", `url(#${gradId})`);
-
+        petalo.setAttribute("fill", `url(#${id})`);
         petalo.setAttribute("transform", `rotate(${i * 20} 60 120)`);
-
-        svg.appendChild(petalo);
+        grupoFlor.appendChild(petalo);
     }
 
-    // 🌻 CENTRO
     let centro = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     centro.setAttribute("cx", "60");
     centro.setAttribute("cy", "120");
     centro.setAttribute("r", 18 * escala);
     centro.setAttribute("fill", "#5d4037");
 
-    svg.appendChild(centro);
+    grupoFlor.appendChild(centro);
+    svg.appendChild(grupoFlor);
 
     campo.appendChild(svg);
 }
 
-// 🌼 RAMO EN PIRÁMIDE (TAMAÑOS DIFERENTES)
+// RAMO
 crearFlor(0.8, -20);
 crearFlor(1, -10);
-crearFlor(1.3, 0);   // 🌻 centro grande
+crearFlor(1.3, 0);
 crearFlor(1, 10);
 crearFlor(0.8, 20);
 
+// ✨ PARTÍCULAS
+function crearParticula() {
+    let p = document.createElement("div");
+    p.className = "particula";
+    p.style.left = Math.random() * 100 + "%";
+    p.style.bottom = "0px";
+    p.style.animationDuration = (4 + Math.random() * 4) + "s";
+
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 8000);
+}
+
+setInterval(crearParticula, 120);
 </script>
 
 </body>
