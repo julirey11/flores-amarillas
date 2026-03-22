@@ -19,7 +19,6 @@ h1 {
     text-shadow: 0 0 20px #ffeb3b;
 }
 
-/* BOTÓN */
 button {
     margin-top: 20px;
     padding: 12px 25px;
@@ -30,35 +29,34 @@ button {
     cursor: pointer;
 }
 
-/* CAMPO */
 #campo {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 70%;
+    height: 80%;
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: 20px;
+    gap: 30px;
 }
 
 /* TALLO */
 .tallo {
-    stroke-dasharray: 300;
-    stroke-dashoffset: 300;
-    animation: crecer 3s ease forwards;
+    stroke-dasharray: 400;
+    stroke-dashoffset: 400;
+    animation: crecer 4s ease forwards;
 }
 
 @keyframes crecer {
     to { stroke-dashoffset: 0; }
 }
 
-/* FLOR */
+/* FLOR MÁS LENTA */
 .flor {
     opacity: 0;
-    transform: scale(0.5);
-    animation: florecer 2s ease forwards;
-    animation-delay: 2.5s;
+    transform: scale(0.3);
+    animation: florecer 3.5s ease forwards;
+    animation-delay: 3s;
 }
 
 @keyframes florecer {
@@ -71,8 +69,8 @@ button {
 /* HOJAS */
 .hoja {
     opacity: 0;
-    animation: hojas 1s ease forwards;
-    animation-delay: 2s;
+    animation: hojas 1.5s ease forwards;
+    animation-delay: 2.5s;
 }
 
 @keyframes hojas {
@@ -91,7 +89,7 @@ button {
 
 @keyframes flotar {
     from { transform: translateY(0); opacity: 1; }
-    to { transform: translateY(-400px); opacity: 0; }
+    to { transform: translateY(-500px); opacity: 0; }
 }
 </style>
 </head>
@@ -106,12 +104,14 @@ button {
 <script>
 const campo = document.getElementById("campo");
 
-function crearFlor(escala, curva, offsetX) {
+function crearFlor(config) {
+
+    let {escala, curva, altura} = config;
 
     let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", 140);
-    svg.setAttribute("height", 260);
-    svg.style.transform = `translateX(${offsetX}px) scale(${escala})`;
+    svg.setAttribute("width", 180);
+    svg.setAttribute("height", 320);
+    svg.style.transform = `scale(${escala})`;
 
     // DEGRADADO
     let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
@@ -121,16 +121,16 @@ function crearFlor(escala, curva, offsetX) {
 
     grad.setAttribute("id", id);
     grad.innerHTML = `
-        <stop offset="0%" stop-color="#fff9c4"/>
+        <stop offset="0%" stop-color="#fffde7"/>
         <stop offset="100%" stop-color="#fbc02d"/>
     `;
 
     defs.appendChild(grad);
     svg.appendChild(defs);
 
-    // TALLO CURVO
+    // TALLO (altura variable)
     let tallo = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    tallo.setAttribute("d", `M70 260 Q${70 + curva} 150 70 120`);
+    tallo.setAttribute("d", `M90 320 Q${90 + curva} 200 90 ${altura}`);
     tallo.setAttribute("stroke", "#2e7d32");
     tallo.setAttribute("stroke-width", 6);
     tallo.setAttribute("fill", "none");
@@ -138,43 +138,49 @@ function crearFlor(escala, curva, offsetX) {
 
     svg.appendChild(tallo);
 
-    // HOJAS GRANDES (visibles)
-    function hoja(x, y, rot) {
-        let h = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
-        h.setAttribute("cx", x);
-        h.setAttribute("cy", y);
-        h.setAttribute("rx", 16);
-        h.setAttribute("ry", 8);
-        h.setAttribute("fill", "#43a047");
-        h.setAttribute("transform", `rotate(${rot} ${x} ${y})`);
-        h.classList.add("hoja");
-        return h;
-    }
+    // 🍃 6 HOJAS
+    let hojasPos = [
+        [70, 260, -40],
+        [110, 240, 40],
+        [70, 220, -30],
+        [110, 200, 30],
+        [75, 180, -25],
+        [105, 160, 25],
+    ];
 
-    svg.appendChild(hoja(55, 200, -40));
-    svg.appendChild(hoja(85, 180, 40));
+    hojasPos.forEach(p => {
+        let hoja = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+        hoja.setAttribute("cx", p[0]);
+        hoja.setAttribute("cy", p[1]);
+        hoja.setAttribute("rx", 14);
+        hoja.setAttribute("ry", 7);
+        hoja.setAttribute("fill", "#43a047");
+        hoja.setAttribute("transform", `rotate(${p[2]} ${p[0]} ${p[1]})`);
+        hoja.classList.add("hoja");
+        svg.appendChild(hoja);
+    });
 
-    // FLOR
+    // 🌻 FLOR
     let grupo = document.createElementNS("http://www.w3.org/2000/svg", "g");
     grupo.classList.add("flor");
 
     for (let i = 0; i < 20; i++) {
         let petalo = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
 
-        petalo.setAttribute("cx", "70");
-        petalo.setAttribute("cy", "100");
-        petalo.setAttribute("rx", 12);
-        petalo.setAttribute("ry", 32);
+        petalo.setAttribute("cx", "90");
+        petalo.setAttribute("cy", altura - 20);
+        petalo.setAttribute("rx", 14);
+        petalo.setAttribute("ry", 38);
         petalo.setAttribute("fill", `url(#${id})`);
 
-        petalo.setAttribute("transform", `rotate(${i * 18} 70 120)`);
+        petalo.setAttribute("transform", `rotate(${i * 18} 90 ${altura})`);
         grupo.appendChild(petalo);
     }
 
     let centro = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    centro.setAttribute("cx", "70");
-    centro.setAttribute("cy", "120");
-    centro.setAttribute("r", 20);
+    centro.setAttribute("cx", "90");
+    centro.setAttribute("cy", altura);
+    centro.setAttribute("r", 22);
     centro.setAttribute("fill", "#5d4037");
 
     grupo.appendChild(centro);
@@ -186,25 +192,25 @@ function crearFlor(escala, curva, offsetX) {
 function crearRamo() {
     campo.innerHTML = "";
 
-    crearFlor(0.7, -30, -80);
-    crearFlor(0.9, -15, -40);
-    crearFlor(1.2, 0, 0);      // centro
-    crearFlor(0.9, 15, 40);
-    crearFlor(0.7, 30, 80);
+    crearFlor({escala:0.7, curva:-30, altura:160});
+    crearFlor({escala:0.9, curva:-15, altura:140});
+    crearFlor({escala:1.2, curva:0, altura:120}); // 🌻 MÁS ALTA
+    crearFlor({escala:0.9, curva:15, altura:140});
+    crearFlor({escala:0.7, curva:30, altura:160});
 }
 
-// PARTÍCULAS
+// ✨ PARTÍCULAS
 function part() {
     let p = document.createElement("div");
     p.className = "particula";
     p.style.left = Math.random() * 100 + "%";
     p.style.bottom = "0px";
-    p.style.animationDuration = (4 + Math.random() * 3) + "s";
+    p.style.animationDuration = (5 + Math.random() * 3) + "s";
 
     document.body.appendChild(p);
-    setTimeout(() => p.remove(), 7000);
+    setTimeout(() => p.remove(), 8000);
 }
-setInterval(part, 150);
+setInterval(part, 120);
 
 </script>
 
