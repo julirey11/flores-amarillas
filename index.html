@@ -20,30 +20,31 @@ h1 {
 }
 
 button {
-    margin-top: 20px;
+    margin-top: 15px;
     padding: 12px 25px;
     font-size: 18px;
-    border: none;
     border-radius: 10px;
+    border: none;
     background: #ffeb3b;
     cursor: pointer;
 }
 
+/* CAMPO */
 #campo {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 80%;
+    height: 85%;
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: 30px;
+    gap: 5vw;
 }
 
-/* TALLO */
+/* TALLO CRECE DESDE ABAJO */
 .tallo {
-    stroke-dasharray: 400;
-    stroke-dashoffset: 400;
+    stroke-dasharray: 500;
+    stroke-dashoffset: 500;
     animation: crecer 4s ease forwards;
 }
 
@@ -51,25 +52,22 @@ button {
     to { stroke-dashoffset: 0; }
 }
 
-/* FLOR MÁS LENTA */
+/* FLOR CRECE DESDE CENTRO */
 .flor {
-    opacity: 0;
-    transform: scale(0.3);
-    animation: florecer 3.5s ease forwards;
-    animation-delay: 3s;
+    transform-origin: center;
+    transform: scale(0);
+    animation: florecer 3s ease forwards;
+    animation-delay: 3.5s;
 }
 
 @keyframes florecer {
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+    to { transform: scale(1); }
 }
 
 /* HOJAS */
 .hoja {
     opacity: 0;
-    animation: hojas 1.5s ease forwards;
+    animation: hojas 2s ease forwards;
     animation-delay: 2.5s;
 }
 
@@ -80,8 +78,8 @@ button {
 /* PARTÍCULAS */
 .particula {
     position: absolute;
-    width: 4px;
-    height: 4px;
+    width: 5px;
+    height: 5px;
     background: #ffeb3b;
     border-radius: 50%;
     animation: flotar linear infinite;
@@ -89,7 +87,15 @@ button {
 
 @keyframes flotar {
     from { transform: translateY(0); opacity: 1; }
-    to { transform: translateY(-500px); opacity: 0; }
+    to { transform: translateY(-600px); opacity: 0; }
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 600px) {
+    svg {
+        width: 120px !important;
+        height: 260px !important;
+    }
 }
 </style>
 </head>
@@ -109,13 +115,13 @@ function crearFlor(config) {
     let {escala, curva, altura} = config;
 
     let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", 180);
-    svg.setAttribute("height", 320);
+    svg.setAttribute("viewBox", "0 0 200 350");
+    svg.style.width = "180px";
+    svg.style.height = "320px";
     svg.style.transform = `scale(${escala})`;
 
     // DEGRADADO
     let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-
     let grad = document.createElementNS("http://www.w3.org/2000/svg", "radialGradient");
     let id = "g" + Math.random();
 
@@ -124,13 +130,12 @@ function crearFlor(config) {
         <stop offset="0%" stop-color="#fffde7"/>
         <stop offset="100%" stop-color="#fbc02d"/>
     `;
-
     defs.appendChild(grad);
     svg.appendChild(defs);
 
-    // TALLO (altura variable)
+    // TALLO DESDE ABAJO
     let tallo = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    tallo.setAttribute("d", `M90 320 Q${90 + curva} 200 90 ${altura}`);
+    tallo.setAttribute("d", `M100 350 Q${100 + curva} 200 100 ${altura}`);
     tallo.setAttribute("stroke", "#2e7d32");
     tallo.setAttribute("stroke-width", 6);
     tallo.setAttribute("fill", "none");
@@ -138,47 +143,48 @@ function crearFlor(config) {
 
     svg.appendChild(tallo);
 
-    // 🍃 6 HOJAS
+    // HOJAS
     let hojasPos = [
-        [70, 260, -40],
-        [110, 240, 40],
-        [70, 220, -30],
-        [110, 200, 30],
-        [75, 180, -25],
-        [105, 160, 25],
+        [80, 300, -40],
+        [120, 280, 40],
+        [80, 260, -30],
+        [120, 240, 30],
+        [85, 220, -25],
+        [115, 200, 25],
     ];
 
     hojasPos.forEach(p => {
         let hoja = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
         hoja.setAttribute("cx", p[0]);
         hoja.setAttribute("cy", p[1]);
-        hoja.setAttribute("rx", 14);
-        hoja.setAttribute("ry", 7);
+        hoja.setAttribute("rx", 16);
+        hoja.setAttribute("ry", 8);
         hoja.setAttribute("fill", "#43a047");
         hoja.setAttribute("transform", `rotate(${p[2]} ${p[0]} ${p[1]})`);
         hoja.classList.add("hoja");
         svg.appendChild(hoja);
     });
 
-    // 🌻 FLOR
+    // FLOR (CRECE DESDE CENTRO)
     let grupo = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    grupo.setAttribute("transform-origin", "100px " + altura);
     grupo.classList.add("flor");
 
     for (let i = 0; i < 20; i++) {
         let petalo = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
 
-        petalo.setAttribute("cx", "90");
+        petalo.setAttribute("cx", "100");
         petalo.setAttribute("cy", altura - 20);
         petalo.setAttribute("rx", 14);
         petalo.setAttribute("ry", 38);
         petalo.setAttribute("fill", `url(#${id})`);
 
-        petalo.setAttribute("transform", `rotate(${i * 18} 90 ${altura})`);
+        petalo.setAttribute("transform", `rotate(${i * 18} 100 ${altura})`);
         grupo.appendChild(petalo);
     }
 
     let centro = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    centro.setAttribute("cx", "90");
+    centro.setAttribute("cx", "100");
     centro.setAttribute("cy", altura);
     centro.setAttribute("r", 22);
     centro.setAttribute("fill", "#5d4037");
@@ -192,14 +198,14 @@ function crearFlor(config) {
 function crearRamo() {
     campo.innerHTML = "";
 
-    crearFlor({escala:0.7, curva:-30, altura:160});
-    crearFlor({escala:0.9, curva:-15, altura:140});
-    crearFlor({escala:1.2, curva:0, altura:120}); // 🌻 MÁS ALTA
-    crearFlor({escala:0.9, curva:15, altura:140});
-    crearFlor({escala:0.7, curva:30, altura:160});
+    crearFlor({escala:0.8, curva:-40, altura:170});
+    crearFlor({escala:1, curva:-20, altura:150});
+    crearFlor({escala:1.3, curva:0, altura:130}); // centro
+    crearFlor({escala:1, curva:20, altura:150});
+    crearFlor({escala:0.8, curva:40, altura:170});
 }
 
-// ✨ PARTÍCULAS
+// PARTÍCULAS
 function part() {
     let p = document.createElement("div");
     p.className = "particula";
