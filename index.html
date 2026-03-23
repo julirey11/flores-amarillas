@@ -97,24 +97,17 @@ button {
 /* RAMO */
 #campo {
     position: absolute;
-    top: 60%;
+    top: 65%;
     left: 50%;
     transform: translate(-50%, -50%);
     
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    
-    gap: 2vw;
+    width: 90vw;
+    height: 60vh;
 }
 
 svg {
-    width: 32vw;
-}
-
-/* FLORES GRANDES */
-svg {
-    width: 30vw;
+    position: absolute;
+    width: 28vw;
 }
 
 /* TALLO */
@@ -179,17 +172,21 @@ te amo mucho mi vida espero y te gusten 💛
 <script>
 const campo = document.getElementById("campo");
 
-function crearFlor(curva, altura) {
+function crearFlor(x, y, escala, curva, altura, z) {
 
     let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 200 350");
+    svg.style.left = x + "vw";
+    svg.style.bottom = y + "vh";
+    svg.style.transform = `scale(${escala})`;
+    svg.style.zIndex = z;
     svg.classList.add("viento");
 
-    /* 🌟 GRADIENTE */
+    /* GRADIENTE */
     let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
 
     let grad = document.createElementNS("http://www.w3.org/2000/svg", "radialGradient");
-    let gradId = "grad" + Math.random();
+    let gradId = "g" + Math.random();
 
     grad.setAttribute("id", gradId);
     grad.innerHTML = `
@@ -209,7 +206,38 @@ function crearFlor(curva, altura) {
     tallo.classList.add("tallo");
     svg.appendChild(tallo);
 
-    /* 🌰 CENTRO */
+    /* HOJAS GRANDES ABAJO 🌿 */
+    for (let i = 0; i < 5; i++) {
+        let hoja = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+        hoja.setAttribute("cx", 100 + (i - 2) * 15);
+        hoja.setAttribute("cy", 300 + (i * 3));
+        hoja.setAttribute("rx", 30);
+        hoja.setAttribute("ry", 15);
+        hoja.setAttribute("fill", "#2e7d32");
+        hoja.setAttribute("transform", `rotate(${i * 15} ${100} ${300})`);
+        svg.appendChild(hoja);
+    }
+
+    /* PÉTALOS */
+    let grupo = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    grupo.classList.add("flor");
+
+    for (let i = 0; i < 24; i++) {
+        let petalo = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+
+        petalo.setAttribute("cx", "100");
+        petalo.setAttribute("cy", altura - 30);
+        petalo.setAttribute("rx", 14);
+        petalo.setAttribute("ry", 55);
+        petalo.setAttribute("fill", `url(#${gradId})`);
+        petalo.setAttribute("transform", `rotate(${i * 15} 100 ${altura})`);
+
+        grupo.appendChild(petalo);
+    }
+
+    svg.appendChild(grupo);
+
+    /* CENTRO ENCIMA 🌰 */
     let centro = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     centro.setAttribute("cx", "100");
     centro.setAttribute("cy", altura);
@@ -217,21 +245,8 @@ function crearFlor(curva, altura) {
     centro.setAttribute("fill", "#4e342e");
     svg.appendChild(centro);
 
-    /* textura del centro */
-    for (let i = 0; i < 25; i++) {
-        let punto = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-
-        let angle = Math.random() * Math.PI * 2;
-        let r = Math.random() * 15;
-
-        punto.setAttribute("cx", 100 + Math.cos(angle) * r);
-        punto.setAttribute("cy", altura + Math.sin(angle) * r);
-        punto.setAttribute("r", 1.5);
-        punto.setAttribute("fill", "#3e2723");
-
-        svg.appendChild(punto);
-    }
-
+    campo.appendChild(svg);
+}
     /* 🌻 PÉTALOS MEJORADOS */
     let grupo = document.createElementNS("http://www.w3.org/2000/svg", "g");
     grupo.classList.add("flor");
@@ -264,12 +279,22 @@ function mostrarFlores() {
 
     campo.innerHTML = "";
 
-    // 💐 RAMO ESCALONADO (SE VE NATURAL)
-    crearFlor(-20, 160); // izquierda
-    crearFlor(-10, 140);
-    crearFlor(0, 120);   // centro (más alta)
-    crearFlor(10, 140);
-    crearFlor(20, 160);  // derecha
+    /* 💐 RAMO REAL (FORMA TRIÁNGULO) */
+
+    // atrás
+    crearFlor(35, 5, 0.9, -30, 110, 1);
+    crearFlor(55, 5, 0.9, 30, 110, 1);
+
+    // medio
+    crearFlor(30, 10, 1, -20, 130, 2);
+    crearFlor(60, 10, 1, 20, 130, 2);
+
+    // centro
+    crearFlor(45, 15, 1.2, 0, 120, 3);
+
+    // frente
+    crearFlor(38, 0, 1, -10, 160, 4);
+    crearFlor(52, 0, 1, 10, 160, 4);
 }
 /* PARTÍCULAS */
 function crearParticula() {
