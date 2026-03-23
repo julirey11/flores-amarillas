@@ -100,11 +100,16 @@ button {
     top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
+    
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    
+    gap: 2vw;
 }
 
 svg {
-    width: 28vw;
-    position: absolute;
+    width: 32vw;
 }
 
 /* FLORES GRANDES */
@@ -259,22 +264,12 @@ function mostrarFlores() {
 
     campo.innerHTML = "";
 
-    /* 💐 RAMO EN FORMA TRIÁNGULO */
-
-    // fila de atrás (altas)
-    crearFlor(-40, 110);
-    crearFlor(40, 110);
-
-    // fila media
-    crearFlor(-25, 130);
-    crearFlor(25, 130);
-
-    // centro
-    crearFlor(0, 140);
-
-    // fila baja (frente)
-    crearFlor(-15, 160);
-    crearFlor(15, 160);
+    // 💐 RAMO ESCALONADO (SE VE NATURAL)
+    crearFlor(-20, 160); // izquierda
+    crearFlor(-10, 140);
+    crearFlor(0, 120);   // centro (más alta)
+    crearFlor(10, 140);
+    crearFlor(20, 160);  // derecha
 }
 /* PARTÍCULAS */
 function crearParticula() {
