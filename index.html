@@ -96,12 +96,15 @@ button {
 
 /* RAMO */
 #campo {
-    position: relative;
-    top: 55%;
+    position: absolute;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
-    display: flex;
-    gap: 1vw;
+}
+
+svg {
+    width: 28vw;
+    position: absolute;
 }
 
 /* FLORES GRANDES */
@@ -254,13 +257,25 @@ function mostrarFlores() {
 
     document.getElementById("musica").play();
 
-    crearFlor(-30,160);
-    crearFlor(-10,140);
-    crearFlor(0,120);
-    crearFlor(10,140);
-    crearFlor(30,160);
-}
+    campo.innerHTML = "";
 
+    /* 💐 RAMO EN FORMA TRIÁNGULO */
+
+    // fila de atrás (altas)
+    crearFlor(-40, 110);
+    crearFlor(40, 110);
+
+    // fila media
+    crearFlor(-25, 130);
+    crearFlor(25, 130);
+
+    // centro
+    crearFlor(0, 140);
+
+    // fila baja (frente)
+    crearFlor(-15, 160);
+    crearFlor(15, 160);
+}
 /* PARTÍCULAS */
 function crearParticula() {
     let p = document.createElement("div");
