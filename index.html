@@ -45,15 +45,26 @@ body {
 /* TEXTO INICIAL */
 #inicio {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* CENTRADO VERTICAL */
+    align-items: center;     /* CENTRADO HORIZONTAL */
+
+    padding: 5vw;
+    box-sizing: border-box;
+
     color: white;
     font-size: 5vw;
     line-height: 1.5;
 }
-
+#inicio p {
+    max-width: 90%;
+}
 /* BOTÓN */
 button {
     margin-top: 4vh;
@@ -138,14 +149,14 @@ svg {
 
 <!-- 💌 MENSAJE -->
 <div id="inicio">
+<p>
 Se que es algo tarde para tus flores amarillas, pero quiero que sepas que jamas me olvido de ti, que todos los dias quiero hacerte sentir especial como lo eres para mi y aunque se que esto no remplazan una flores verdaderas, estas en programacion fueron hechas con todo mi amor para ti para demostrarte mi amor sincero hacia ti.<br><br>
 
 te amo mucho mi vida espero y te gusten 💛
+</p>
 
-<br>
 <button onclick="mostrarFlores()">Click 💛</button>
 </div>
-
 <!-- 🌻 FLORES -->
 <div id="flores">
     <div id="titulo">Con mucho amor para mi princesa 💛</div>
