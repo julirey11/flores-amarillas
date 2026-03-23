@@ -2,60 +2,78 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Flores para ti 💛</title>
+<title>Para ti 💛</title>
 
 <style>
 body {
     margin: 0;
     background: radial-gradient(circle, #140028, #000);
-    overflow: hidden;
     font-family: Arial;
+    overflow: hidden;
     text-align: center;
 }
 
-/* TEXTO GRANDE */
-h1 {
-    color: #ffeb3b;
-    margin-top: 3vh;
-    font-size: 6vw;
-    text-shadow: 0 0 20px #ffeb3b;
+/* PANTALLA INICIAL */
+#inicio {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    color: white;
+    font-size: 5vw;
+    line-height: 1.5;
 }
 
+/* BOTÓN */
 button {
-    margin-top: 2vh;
-    padding: 2vh 5vw;
-    font-size: 4.5vw;
+    margin-top: 4vh;
+    padding: 2vh 6vw;
+    font-size: 5vw;
     border-radius: 12px;
     border: none;
     background: #ffeb3b;
     cursor: pointer;
 }
 
-/* RAMO CENTRADO */
+/* PANTALLA FLORES */
+#flores {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+/* TEXTO ARRIBA */
+#titulo {
+    position: absolute;
+    top: 5%;
+    width: 100%;
+    font-size: 6vw;
+    color: #ffeb3b;
+    text-shadow: 0 0 20px #ffeb3b;
+}
+
+/* RAMO CENTRO */
 #campo {
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
-    transform: translate(-50%, -30%);
-    width: 100%;
-    height: 80%;
+    transform: translate(-50%, -50%);
     display: flex;
-    justify-content: center;
-    align-items: flex-end;
     gap: 1vw;
 }
 
-/* FLORES GIGANTES */
+/* FLORES GRANDES */
 svg {
-    width: 35vw;
-    height: auto;
+    width: 30vw;
 }
 
 /* TALLO */
 .tallo {
     stroke-dasharray: 500;
     stroke-dashoffset: 500;
-    animation: crecer 2.5s ease forwards;
+    animation: crecer 2s forwards;
 }
 
 @keyframes crecer {
@@ -64,127 +82,69 @@ svg {
 
 /* FLOR */
 .flor {
-    transform-origin: center;
     transform: scale(0);
-    animation: florecer 1s ease forwards;
+    animation: florecer 1s forwards;
+    animation-delay: 2s;
 }
 
 @keyframes florecer {
     to { transform: scale(1); }
 }
 
-/* VIENTO MÁS NATURAL */
+/* VIENTO */
 .viento {
-    animation: viento 4s ease-in-out infinite alternate;
-    transform-origin: bottom center;
+    animation: viento 4s infinite alternate;
+    transform-origin: bottom;
 }
 
 @keyframes viento {
-    0% { transform: rotate(-3deg); }
-    50% { transform: rotate(2deg); }
-    100% { transform: rotate(-2deg); }
-}
-
-/* HOJAS */
-.hoja {
-    opacity: 0;
-    animation: hojas 1s ease forwards;
-}
-
-@keyframes hojas {
-    to { opacity: 1; }
-}
-
-/* BRILLOS ✨ */
-.brillo {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: #fff59d;
-    border-radius: 50%;
-    opacity: 0;
-    animation: brillar 2s infinite;
-}
-
-@keyframes brillar {
-    0% { opacity: 0; transform: scale(0); }
-    50% { opacity: 1; transform: scale(1.5); }
-    100% { opacity: 0; transform: scale(0); }
-}
-
-/* MENSAJE */
-#mensaje {
-    position: absolute;
-    bottom: 10%;
-    width: 100%;
-    font-size: 5vw;
-    color: #fff;
-    opacity: 0;
-    animation: aparecer 3s forwards;
-    animation-delay: 5s;
-}
-
-@keyframes aparecer {
-    to { opacity: 1; }
+    from { transform: rotate(-3deg); }
+    to { transform: rotate(3deg); }
 }
 </style>
 </head>
 
 <body>
 
-<h1>🌻 Flores para ti 💛</h1>
-<button onclick="iniciar()">Dale click 💛</button>
+<!-- 💌 MENSAJE -->
+<div id="inicio">
+Se que es algo tarde para tus flores amarillas, pero quiero que sepas que jamas me olvido de ti, que todos los dias quiero hacerte sentir especial como lo eres para mi y aunque se que esto no remplazan una flores verdaderas, estas en programacion fueron hechas con todo mi amor para ti para demostrarte mi amor sincero hacia ti.<br><br>
 
-<div id="campo"></div>
-<div id="mensaje">Para ti 💛 con todo mi cariño ✨</div>
+te amo mucho mi vida espero y te gusten 💛
 
-<!-- AUDIO -->
-<audio id="musica" loop>
-    <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mp3">
+<br>
+<button onclick="mostrarFlores()">Click 💛</button>
+</div>
+
+<!-- 🌻 FLORES -->
+<div id="flores">
+    <div id="titulo">Con mucho amor para mi princesa 💛</div>
+    <div id="campo"></div>
+</div>
+
+<!-- 🎶 MÚSICA -->
+<audio id="musica">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b6f52.mp3?filename=romantic-110997.mp3" type="audio/mp3">
 </audio>
 
 <script>
 const campo = document.getElementById("campo");
 
-function crearFlor(config, delay) {
-
-    let {curva, altura} = config;
+function crearFlor(curva, altura) {
 
     let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 200 350");
     svg.classList.add("viento");
 
-    // TALLO
     let tallo = document.createElementNS("http://www.w3.org/2000/svg", "path");
     tallo.setAttribute("d", `M100 350 Q${100 + curva} 200 100 ${altura}`);
     tallo.setAttribute("stroke", "#2e7d32");
     tallo.setAttribute("stroke-width", 5);
     tallo.setAttribute("fill", "none");
     tallo.classList.add("tallo");
-    tallo.style.animationDelay = delay + "s";
+
     svg.appendChild(tallo);
 
-    // HOJAS
-    let hojas = [
-        [95, 300, -30],
-        [105, 260, 30],
-        [95, 220, -25],
-    ];
-
-    hojas.forEach((p, i) => {
-        let hoja = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
-        hoja.setAttribute("cx", p[0]);
-        hoja.setAttribute("cy", p[1]);
-        hoja.setAttribute("rx", 14);
-        hoja.setAttribute("ry", 8);
-        hoja.setAttribute("fill", "#43a047");
-        hoja.setAttribute("transform", `rotate(${p[2]} ${p[0]} ${p[1]})`);
-        hoja.classList.add("hoja");
-        hoja.style.animationDelay = (delay + 1) + "s";
-        svg.appendChild(hoja);
-    });
-
-    // CENTRO
     let centro = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     centro.setAttribute("cx", "100");
     centro.setAttribute("cy", altura);
@@ -192,46 +152,36 @@ function crearFlor(config, delay) {
     centro.setAttribute("fill", "#5d4037");
     svg.appendChild(centro);
 
-    // PÉTALOS
     let grupo = document.createElementNS("http://www.w3.org/2000/svg", "g");
     grupo.classList.add("flor");
-    grupo.style.animationDelay = (delay + 1.5) + "s";
 
     for (let i = 0; i < 16; i++) {
-        let petalo = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
-        petalo.setAttribute("cx", "100");
-        petalo.setAttribute("cy", altura - 20);
-        petalo.setAttribute("rx", 16);
-        petalo.setAttribute("ry", 40);
-        petalo.setAttribute("fill", "#fdd835");
-        petalo.setAttribute("transform", `rotate(${i * 22} 100 ${altura})`);
-        grupo.appendChild(petalo);
+        let p = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+        p.setAttribute("cx", "100");
+        p.setAttribute("cy", altura - 20);
+        p.setAttribute("rx", 16);
+        p.setAttribute("ry", 40);
+        p.setAttribute("fill", "#fdd835");
+        p.setAttribute("transform", `rotate(${i * 22} 100 ${altura})`);
+        grupo.appendChild(p);
     }
 
     svg.appendChild(grupo);
     campo.appendChild(svg);
 }
 
-function iniciar() {
-    campo.innerHTML = "";
+function mostrarFlores() {
+
+    document.getElementById("inicio").style.display = "none";
+    document.getElementById("flores").style.display = "block";
 
     document.getElementById("musica").play();
 
-    crearFlor({curva:-30, altura:160}, 0);
-    crearFlor({curva:-10, altura:140}, 0.5);
-    crearFlor({curva:0, altura:120}, 1);
-    crearFlor({curva:10, altura:140}, 1.5);
-    crearFlor({curva:30, altura:160}, 2);
-
-    // BRILLOS
-    for (let i = 0; i < 20; i++) {
-        let b = document.createElement("div");
-        b.className = "brillo";
-        b.style.left = Math.random() * 100 + "%";
-        b.style.top = (40 + Math.random() * 40) + "%";
-        b.style.animationDelay = Math.random() * 3 + "s";
-        document.body.appendChild(b);
-    }
+    crearFlor(-30,160);
+    crearFlor(-10,140);
+    crearFlor(0,120);
+    crearFlor(10,140);
+    crearFlor(30,160);
 }
 </script>
 
