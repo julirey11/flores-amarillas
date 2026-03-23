@@ -5,15 +5,28 @@
 <title>Para ti 💛</title>
 
 <style>
-body {
+
+/* 🔥 SOLUCIÓN FONDO BLANCO */
+html, body {
     margin: 0;
-    background: radial-gradient(circle, #140028, #000); /* 🔥 FONDO RESTAURADO */
-    font-family: Arial;
+    padding: 0;
+    height: 100%;
+    background: radial-gradient(circle, #140028, #000);
+}
+
+/* BODY LIMPIO */
+body {
     overflow: hidden;
+    font-family: Arial;
     text-align: center;
 }
 
-/* PARTÍCULAS ✨ */
+/* PANTALLAS */
+#inicio, #flores {
+    min-height: 100vh;
+}
+
+/* PARTÍCULAS */
 .particula {
     position: absolute;
     width: 6px;
@@ -29,7 +42,7 @@ body {
     to { transform: translateY(-100vh); opacity: 0; }
 }
 
-/* PANTALLA INICIAL */
+/* TEXTO INICIAL */
 #inicio {
     position: absolute;
     top: 50%;
@@ -52,7 +65,7 @@ button {
     cursor: pointer;
 }
 
-/* PANTALLA FLORES */
+/* CONTENEDOR FLORES */
 #flores {
     display: none;
     position: absolute;
@@ -117,6 +130,7 @@ svg {
     from { transform: rotate(-3deg); }
     to { transform: rotate(3deg); }
 }
+
 </style>
 </head>
 
@@ -146,7 +160,7 @@ te amo mucho mi vida espero y te gusten 💛
 <script>
 const campo = document.getElementById("campo");
 
-/* 🌻 CREAR FLOR */
+/* CREAR FLOR */
 function crearFlor(curva, altura) {
 
     let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -187,7 +201,7 @@ function crearFlor(curva, altura) {
     campo.appendChild(svg);
 }
 
-/* 💐 MOSTRAR RAMO */
+/* MOSTRAR FLORES */
 function mostrarFlores() {
 
     document.getElementById("inicio").style.display = "none";
@@ -202,7 +216,7 @@ function mostrarFlores() {
     crearFlor(30,160);
 }
 
-/* ✨ PARTÍCULAS */
+/* PARTÍCULAS */
 function crearParticula() {
     let p = document.createElement("div");
     p.className = "particula";
@@ -215,6 +229,7 @@ function crearParticula() {
 }
 
 setInterval(crearParticula, 120);
+
 </script>
 
 </body>
