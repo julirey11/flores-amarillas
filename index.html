@@ -171,47 +171,81 @@ te amo mucho mi vida espero y te gusten 💛
 <script>
 const campo = document.getElementById("campo");
 
-/* CREAR FLOR */
 function crearFlor(curva, altura) {
 
     let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 200 350");
     svg.classList.add("viento");
 
+    /* 🌟 GRADIENTE */
+    let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+
+    let grad = document.createElementNS("http://www.w3.org/2000/svg", "radialGradient");
+    let gradId = "grad" + Math.random();
+
+    grad.setAttribute("id", gradId);
+    grad.innerHTML = `
+        <stop offset="0%" stop-color="#fff176"/>
+        <stop offset="100%" stop-color="#fbc02d"/>
+    `;
+
+    defs.appendChild(grad);
+    svg.appendChild(defs);
+
+    /* TALLO */
     let tallo = document.createElementNS("http://www.w3.org/2000/svg", "path");
     tallo.setAttribute("d", `M100 350 Q${100 + curva} 200 100 ${altura}`);
     tallo.setAttribute("stroke", "#2e7d32");
     tallo.setAttribute("stroke-width", 5);
     tallo.setAttribute("fill", "none");
     tallo.classList.add("tallo");
-
     svg.appendChild(tallo);
 
+    /* 🌰 CENTRO */
     let centro = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     centro.setAttribute("cx", "100");
     centro.setAttribute("cy", altura);
-    centro.setAttribute("r", 18);
-    centro.setAttribute("fill", "#5d4037");
+    centro.setAttribute("r", 20);
+    centro.setAttribute("fill", "#4e342e");
     svg.appendChild(centro);
 
+    /* textura del centro */
+    for (let i = 0; i < 25; i++) {
+        let punto = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+
+        let angle = Math.random() * Math.PI * 2;
+        let r = Math.random() * 15;
+
+        punto.setAttribute("cx", 100 + Math.cos(angle) * r);
+        punto.setAttribute("cy", altura + Math.sin(angle) * r);
+        punto.setAttribute("r", 1.5);
+        punto.setAttribute("fill", "#3e2723");
+
+        svg.appendChild(punto);
+    }
+
+    /* 🌻 PÉTALOS MEJORADOS */
     let grupo = document.createElementNS("http://www.w3.org/2000/svg", "g");
     grupo.classList.add("flor");
 
-    for (let i = 0; i < 16; i++) {
-        let p = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
-        p.setAttribute("cx", "100");
-        p.setAttribute("cy", altura - 20);
-        p.setAttribute("rx", 16);
-        p.setAttribute("ry", 40);
-        p.setAttribute("fill", "#fdd835");
-        p.setAttribute("transform", `rotate(${i * 22} 100 ${altura})`);
-        grupo.appendChild(p);
+    for (let i = 0; i < 24; i++) {
+        let petalo = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+
+        petalo.setAttribute("cx", "100");
+        petalo.setAttribute("cy", altura - 30);
+        petalo.setAttribute("rx", 14);
+        petalo.setAttribute("ry", 55);
+
+        petalo.setAttribute("fill", `url(#${gradId})`);
+
+        petalo.setAttribute("transform", `rotate(${i * 15} 100 ${altura})`);
+
+        grupo.appendChild(petalo);
     }
 
     svg.appendChild(grupo);
     campo.appendChild(svg);
 }
-
 /* MOSTRAR FLORES */
 function mostrarFlores() {
 
